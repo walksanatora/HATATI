@@ -1,0 +1,48 @@
+architectury {
+    common(rootProject.enabled_platforms.split(","))
+}
+
+loom {
+    accessWidenerPath = file("src/main/resources/hextweaks.accesswidener")
+}
+
+compileKotlin {
+    kotlinOptions {
+        jvmTarget = '17'
+    }
+}
+
+repositories {
+    maven { url = "https://maven.shedaniel.me/" }
+    maven {
+        name = 'BlameJared Maven'
+        url = 'https://maven.blamejared.com'
+    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup "maven.modrinth"
+        }
+    }
+}
+
+dependencies {
+    // We depend on fabric loader here to use the fabric @Environment annotations and get the mixin dependencies
+    // Do NOT use other classes from fabric loader
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8'
+    modImplementation "net.fabricmc:fabric-loader:${rootProject.fabric_loader_version}"
+    // Remove the next line if you don't want to depend on the API
+    modApi "dev.architectury:architectury:${rootProject.architectury_version}"
+    modCompileOnly "at.petra-k.hexcasting:hexcasting-common-1.19.2:0.10.3"
+    modCompileOnly "maven.modrinth:aBVJ6Q36:XMX5kXcI" //Hexal 0.2.14-fabric
+    modApi("me.shedaniel.cloth:cloth-config:8.2.88") {
+        exclude(group: "net.fabricmc.fabric-api")
+    }
+    //warning: things are about to get *bespoke*
+    compileOnly('com.blamejared.crafttweaker:CraftTweaker-common-1.19.2:10.1.44')
+}
